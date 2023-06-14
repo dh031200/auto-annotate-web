@@ -9,11 +9,11 @@ from loguru import logger
 
 
 class ParseKwargs(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
+    def __call__(self, namespace, values):
         setattr(namespace, self.dest, {})
         for value in values:
-            key, value = value.split("=")
-            getattr(namespace, self.dest)[key] = value
+            key, _value = value.split("=")
+            getattr(namespace, self.dest)[key] = _value
 
 
 def annotate(path, kwargs):

@@ -43,8 +43,8 @@ def normalize(size, box):
     w = round(w * dw, 6)
     y = round(y * dh, 6)
     h = round(h * dh, 6)
-    R = [x, y, w, h]
-    return " ".join(map(str, R))
+    rect = [x, y, w, h]
+    return " ".join(map(str, rect))
 
 
 def p2b(src):
@@ -77,8 +77,8 @@ def p2b(src):
             canvas = np.zeros_like(img)
             with open(labels / label) as f:
                 lines = f.readlines()
-            XY_POLYS = []
-            XYN_POLYS = []
+            xy_polys = []
+            xyn_polys = []
             new_lines = []
             new_boxes = []
             for line in lines:
@@ -91,8 +91,8 @@ def p2b(src):
                 __line = [list(x) for x in _line]
                 str_line = [" ".join(map(str, x)) for x in _line]
                 new_lines.append([cls, __line])
-                XY_POLYS.append(f'{cls} {" ".join(str_line)}')
-                XYN_POLYS.append(line.strip())
+                xy_polys.append(f'{cls} {" ".join(str_line)}')
+                xyn_polys.append(line.strip())
                 new_boxes.append(
                     [
                         cls,
@@ -112,18 +112,18 @@ def p2b(src):
             canvas = cv2.addWeighted(img, 1, canvas, 0.6, 0)
             cv2.imwrite(f"{output}/{name}.{extension}", canvas)
 
-            CLASSES = [names[box[0]] for box in new_boxes]
-            XY_BOXES = [[*map(int, box)] for box in new_boxes]
-            XYN_BOXES = [normalize((width, height), box) for box in XY_BOXES]
+            classes = [names[box[0]] for box in new_boxes]
+            xy_boxes = [[*map(int, box)] for box in new_boxes]
+            xyn_boxes = [normalize((width, height), box) for box in xy_boxes]
 
             annotation = {}
-            for i in range(len(CLASSES)):
+            for i in range(len(classes)):
                 annotation[i] = {
-                    "cls": CLASSES[i],
-                    "box_xy": " ".join(map(str, XY_BOXES[i])),
-                    "box_xyn": XYN_BOXES[i],
-                    "poly_xy": XY_POLYS[i],
-                    "poly_xyn": XYN_POLYS[i],
+                    "cls": classes[i],
+                    "box_xy": " ".join(map(str, xy_boxes[i])),
+                    "box_xyn": xyn_boxes[i],
+                    "poly_xy": xy_polys[i],
+                    "poly_xyn": xyn_polys[i],
                 }
 
             with open(f"upload/{src}/output/annotation.json", "w") as f:
