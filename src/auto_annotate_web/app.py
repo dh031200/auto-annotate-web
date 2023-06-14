@@ -6,8 +6,8 @@ from pathlib import Path
 from uuid import uuid4
 
 from fastapi import FastAPI, UploadFile
-from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from auto_annotate_web import annotate, p2b
