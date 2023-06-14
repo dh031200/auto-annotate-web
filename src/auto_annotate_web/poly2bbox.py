@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2023-present Danny Kim <imbird0312@gmail.com>
+#
+# SPDX-License-Identifier: Apache License 2.0
 import os
 import json
 from pathlib import Path
@@ -65,7 +68,6 @@ def p2b(src):
         for label in os.listdir(labels):
             extension = None
             name = (labels / label).stem
-            print(f"img : {name}")
             for extension in img_extensions:
                 if (images / f"{name}.{extension}").exists():
                     break
@@ -111,9 +113,7 @@ def p2b(src):
 
             canvas = cv2.addWeighted(img, 1, canvas, 0.6, 0)
             cv2.imwrite(f"{output}/{name}.{extension}", canvas)
-            for box in new_boxes:
-                cls = names[box[0]]
-                [*map(int, box[1:])]
+
             CLASSES = [names[box[0]] for box in new_boxes]
             XY_BOXES = [[*map(int, box)] for box in new_boxes]
             XYN_BOXES = [normalize((width, height), box) for box in XY_BOXES]

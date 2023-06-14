@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2023-present Danny Kim <imbird0312@gmail.com>
+#
+# SPDX-License-Identifier: Apache License 2.0
 import json
 from pathlib import Path
 from uuid import uuid4
@@ -6,8 +9,7 @@ from pydantic import BaseModel
 from fastapi import FastAPI, UploadFile
 from fastapi.responses import FileResponse
 
-from ad_api import annotate
-from poly2bbox_api import p2b
+from auto_annotate_web import annotate, p2b
 
 app = FastAPI()
 
@@ -48,7 +50,6 @@ async def run_annotation(item: RunItem):
     p2b(only_name)
 
     path = Path(f"upload/{only_name}/output/valid/images_det/{file_name}")
-    print(path)
 
     return FileResponse(path)
 
