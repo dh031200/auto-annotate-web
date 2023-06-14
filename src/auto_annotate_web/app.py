@@ -7,11 +7,20 @@ from uuid import uuid4
 
 from fastapi import FastAPI, UploadFile
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from auto_annotate_web import annotate, p2b
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 upload_prefix = Path("upload")
 upload_prefix.mkdir(exist_ok=True)
