@@ -3,14 +3,14 @@
 # SPDX-License-Identifier: Apache License 2.0
 import argparse
 
-from loguru import logger
-from autodistill_grounded_sam import GroundedSAM
 from autodistill.detection import CaptionOntology
+from autodistill_grounded_sam import GroundedSAM
+from loguru import logger
 
 
 class ParseKwargs(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
-        setattr(namespace, self.dest, dict())
+        setattr(namespace, self.dest, {})
         for value in values:
             key, value = value.split("=")
             getattr(namespace, self.dest)[key] = value

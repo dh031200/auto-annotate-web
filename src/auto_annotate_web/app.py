@@ -5,9 +5,9 @@ import json
 from pathlib import Path
 from uuid import uuid4
 
-from pydantic import BaseModel
 from fastapi import FastAPI, UploadFile
 from fastapi.responses import FileResponse
+from pydantic import BaseModel
 
 from auto_annotate_web import annotate, p2b
 
@@ -61,7 +61,7 @@ async def save_annotation(item: SaveItem):
     only_name = Path(file_name).stem
 
     path = Path(f"upload/{only_name}/output/annotation.json")
-    with open(path, "r") as f:
+    with open(path) as f:
         annot = json.load(f)
 
     if annot_type == "rectangle":
@@ -71,9 +71,9 @@ async def save_annotation(item: SaveItem):
     else:
         return {"status": 405}
 
-    response = dict()
+    response = {}
     for idx in annot:
         data = " ".join(annot[idx][_type].split()[1:])
-        response[idx] = dict(cls=annot[idx]["cls"], annotation=data)
+        response[idx] = {"cls": annot[idx]["cls"], "annotation": data}
 
     return response

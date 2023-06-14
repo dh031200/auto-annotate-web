@@ -1,13 +1,13 @@
 # SPDX-FileCopyrightText: 2023-present Danny Kim <imbird0312@gmail.com>
 #
 # SPDX-License-Identifier: Apache License 2.0
-import os
 import json
+import os
 from pathlib import Path
 
 import cv2
-import yaml
 import numpy as np
+import yaml
 
 
 def get_colors(num):
@@ -48,7 +48,7 @@ def normalize(size, box):
 
 
 def p2b(src):
-    with open(f"upload/{src}/output/data.yaml", "r") as f:
+    with open(f"upload/{src}/output/data.yaml") as f:
         data = yaml.safe_load(f)
 
     phases = ["train", "val"]
@@ -75,7 +75,7 @@ def p2b(src):
             img = cv2.imread(str(img_path))
             height, width, _ = img.shape
             canvas = np.zeros_like(img)
-            with open(labels / label, "r") as f:
+            with open(labels / label) as f:
                 lines = f.readlines()
             XY_POLYS = []
             XYN_POLYS = []
@@ -107,9 +107,7 @@ def p2b(src):
                 line = new_lines[idx][1]
                 boxes = new_boxes[idx]
                 cv2.fillPoly(canvas, [np.int32(line)], colors[cls])
-                cv2.rectangle(
-                    img, np.int32(boxes[1:3]), np.int32(boxes[3:]), colors[cls], 3
-                )
+                cv2.rectangle(img, np.int32(boxes[1:3]), np.int32(boxes[3:]), colors[cls], 3)
 
             canvas = cv2.addWeighted(img, 1, canvas, 0.6, 0)
             cv2.imwrite(f"{output}/{name}.{extension}", canvas)
@@ -118,15 +116,15 @@ def p2b(src):
             XY_BOXES = [[*map(int, box)] for box in new_boxes]
             XYN_BOXES = [normalize((width, height), box) for box in XY_BOXES]
 
-            annotation = dict()
+            annotation = {}
             for i in range(len(CLASSES)):
-                annotation[i] = dict(
-                    cls=CLASSES[i],
-                    box_xy=" ".join(map(str, XY_BOXES[i])),
-                    box_xyn=XYN_BOXES[i],
-                    poly_xy=XY_POLYS[i],
-                    poly_xyn=XYN_POLYS[i],
-                )
+                annotation[i] = {
+                    "cls": CLASSES[i],
+                    "box_xy": " ".join(map(str, XY_BOXES[i])),
+                    "box_xyn": XYN_BOXES[i],
+                    "poly_xy": XY_POLYS[i],
+                    "poly_xyn": XYN_POLYS[i],
+                }
 
             with open(f"upload/{src}/output/annotation.json", "w") as f:
                 json.dump(annotation, f)
