@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2023-present Danny Kim <imbird0312@gmail.com>
 #
-# SPDX-License-Identifier: Apache License 2.0
+# SPDX-License-Identifier: Apache-2.0
 import json
 from pathlib import Path
 from uuid import uuid4
