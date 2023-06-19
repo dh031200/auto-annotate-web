@@ -7,7 +7,7 @@ name = "auto-annotate-web"
 dynamic = ["version"]
 description = ''
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.8"
 license = "Apache-2.0"
 keywords = []
 authors = [
