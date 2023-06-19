@@ -1,17 +1,17 @@
 # SPDX-FileCopyrightText: 2023-present Danny Kim <imbird0312@gmail.com>
 #
 # SPDX-License-Identifier: Apache-2.0
-import os
 import json
+import os
 from pathlib import Path
 from uuid import uuid4
 
 from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from pbaa import inference, model_init
 from pydantic import BaseModel
 
-from pbaa import model_init, inference
 # from auto_annotate_web import annotate, p2b
 
 app = FastAPI()
@@ -27,6 +27,7 @@ app.add_middleware(
 upload_prefix = Path("upload")
 upload_prefix.mkdir(exist_ok=True)
 model_init()
+
 
 class RunItem(BaseModel):
     filename: str
@@ -68,7 +69,6 @@ async def run_annotation(item: RunItem):
 @app.post("/save")
 async def save_annotation(item: SaveItem):
     file_name = item.filename
-    annot_type = item.annottype
     only_name = Path(file_name).stem
 
     path = Path(f"upload/{only_name}/output/{only_name}.json")
