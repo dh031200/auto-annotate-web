@@ -4,14 +4,9 @@
 dependencies = """
 python=3.10
 pip
-numpy
-opencv
 loguru
 python-multipart
 fastapi
 uvicorn
-torch
-torchvision
-autodistill
-autodistill-grounded-sam
+pbaa
 """

@@ -41,7 +41,7 @@ async def upload_photo(file: UploadFile):
     new_name = str(uuid4())
     extension = Path(file.filename).suffix
     content = await file.read()
-    path = upload_prefix / new_name / "input"
+    path = upload_prefexix / new_name / "input"
     path.mkdir(parents=True)
     file_name = f"{new_name}{extension}"
     with open(path / file_name, "wb") as fp:
