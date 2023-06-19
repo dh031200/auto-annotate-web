@@ -14,7 +14,7 @@ from auto_annotate_web.app import __file__ as app
 @click.group(context_settings={"help_option_names": ["-h", "--help"]}, invoke_without_command=True)
 @click.version_option(version=__version__, prog_name="auto-annotate-web")
 def auto_annotate_web():
-    os.chdir(Path(app).parent)
+    app_dir=Path(app).parent
     logger.info("Launch auto-annotate-web..!")
-    os.system("uvicorn app:app --port=8123 --host=0.0.0.0")
+    os.system(f"uvicorn app:app --port=8123 --host=0.0.0.0 --app-dir={app_dir}")
     logger.info("Program end")

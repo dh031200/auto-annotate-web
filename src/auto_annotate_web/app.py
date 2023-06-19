@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2023-present Danny Kim <imbird0312@gmail.com>
 #
 # SPDX-License-Identifier: Apache-2.0
+import os
 import json
 from pathlib import Path
 from uuid import uuid4
@@ -10,7 +11,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-from auto_annotate_web import annotate, p2b
+from pbaa import model_init, inference
+# from auto_annotate_web import annotate, p2b
 
 app = FastAPI()
 
@@ -24,7 +26,7 @@ app.add_middleware(
 
 upload_prefix = Path("upload")
 upload_prefix.mkdir(exist_ok=True)
-
+model_init()
 
 class RunItem(BaseModel):
     filename: str
@@ -41,7 +43,7 @@ async def upload_photo(file: UploadFile):
     new_name = str(uuid4())
     extension = Path(file.filename).suffix
     content = await file.read()
-    path = upload_prefexix / new_name / "input"
+    path = upload_prefix / new_name / "input"
     path.mkdir(parents=True)
     file_name = f"{new_name}{extension}"
     with open(path / file_name, "wb") as fp:
@@ -54,11 +56,11 @@ async def upload_photo(file: UploadFile):
 async def run_annotation(item: RunItem):
     file_name = item.filename
     only_name = Path(file_name).stem
+    extension = Path(file_name).suffix
     prompt = item.prompt
-    annotate(only_name, prompt)
-    p2b(only_name)
+    inference(f"upload/{only_name}/input/{file_name}", prompt, output_dir=f"upload/{only_name}/output/")
 
-    path = Path(f"upload/{only_name}/output/valid/images_det/{file_name}")
+    path = Path(f"upload/{only_name}/output/{only_name}_seg{extension}")
 
     return FileResponse(path)
 
@@ -69,20 +71,8 @@ async def save_annotation(item: SaveItem):
     annot_type = item.annottype
     only_name = Path(file_name).stem
 
-    path = Path(f"upload/{only_name}/output/annotation.json")
+    path = Path(f"upload/{only_name}/output/{only_name}.json")
     with open(path) as f:
         annot = json.load(f)
 
-    if annot_type == "rectangle":
-        _type = "box_xy"
-    elif annot_type == "polygon":
-        _type = "poly_xy"
-    else:
-        return {"status": 405}
-
-    response = {}
-    for idx in annot:
-        data = " ".join(annot[idx][_type].split()[1:])
-        response[idx] = {"cls": annot[idx]["cls"], "annotation": data}
-
-    return response
+    return annot
