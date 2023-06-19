@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 import json
-import os
 from pathlib import Path
 from uuid import uuid4
 
@@ -11,8 +10,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pbaa import inference, model_init
 from pydantic import BaseModel
-
-# from auto_annotate_web import annotate, p2b
 
 app = FastAPI()
 
